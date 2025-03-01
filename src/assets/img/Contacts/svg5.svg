@@ -1,0 +1,10 @@
+<svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" fill="none">
+
+ <g>
+  <title>Layer 1</title>
+  <path id="svg_1" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="22.9256" stroke-width="2" stroke="#EF7F1A" d="m21.7478,1.00366l-21.11285,0l0,19.84284l21.11285,0l0,-19.84284z"/>
+  <g>
+   <path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="22.9256" stroke-width="2" stroke="#EF7F1A" d="m8.48389,7.03143l6.03223,4.28606l-6.03223,3.65109l0,-7.93715z" clip-rule="evenodd" fill-rule="evenodd"/>
+  </g>
+ </g>
+</svg>
