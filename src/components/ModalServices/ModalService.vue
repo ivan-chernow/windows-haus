@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-overlay" @click="$emit('close')">
+  <div class="modal-overlay modal" @click="$emit('close')">
     <div class="service-modal" @click.stop>
       <svg
           width="23"
@@ -23,14 +23,14 @@
           <p class="modal-content-right__title">{{ props.title }}</p>
           <p class="modal-content-right__subtitle">{{ props.description }}</p>
           <div class='modal-content-right__row'>
-            <FreezeButton class="header__freeze-button" @click="openModalFreeze" width="169px" height="40px"
+            <FreezeButton class="header__freeze-button" @click="modalFreeze.openModalFreeze" width="169px" height="40px"
                           title="Заявка на замер"/>
             <transition name="fade">
-              <ModalMenuFreeze v-if="showModalFreeze" @close="closeModalFreeze"/>
+              <ModalMenuFreeze v-if="modalFreeze.showModalFreeze" @close="modalFreeze.closeModalFreeze"/>
             </transition>
-            <CalculationButton class="header_calc-button" @click="openModalCalc" width="169px" height="40px"/>
+            <CalculationButton class="header_calc-button" @click="modalCalc.openModalCalc" width="169px" height="40px"/>
             <transition name="fade">
-              <ModalMenuCalc v-if="showModalCalc" @close="closeModalCalc"/>
+              <ModalMenuCalc v-if="modalCalc.showModalCalc" @close="modalCalc.closeModalCalc"/>
             </transition>
           </div>
         </div>
@@ -46,9 +46,7 @@
           </div>
         </li>
       </ul>
-
     </div>
-
   </div>
 </template>
 <script setup lang="ts">
@@ -58,73 +56,40 @@ import ModalMenuFreeze from "~/components/ModalMenuFreeze/ModalMenuFreeze.vue";
 import ModalMenuCalc from "~/components/ModalMenuCalc/ModalMenuCalc.vue";
 import ModalServiceCarousel from "~/components/ModalServices/ModalServiceCarousel.vue";
 import {defineProps} from "vue";
+import {ModalCalcState, ModalFreezeState} from "~/store/modalState";
+import {usePressEscape} from "~/hooks/usePressEscape";
 
-const showModalFreeze = ref(false);
-const showModalCalc = ref(false);
+const modalFreeze = ModalFreezeState()
+const modalCalc = ModalCalcState()
 
 interface ModalServicesProps {
   title: string;
   description: string;
   imagesModals: { src: string; alt: string; }[];
-  list: { title: string; subTitle: string; }[];
+  list: { title: string; subTitle: string; img: string}[];
 }
 
 const props = defineProps<ModalServicesProps>();
-const openModalFreeze = () => {
-  showModalFreeze.value = true;
-};
 
-const closeModalFreeze = () => {
-  showModalFreeze.value = false;
-};
-const openModalCalc = () => {
-  showModalCalc.value = true;
-};
-
-const closeModalCalc = () => {
-  showModalCalc.value = false;
-};
-
-
-const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    closeModalFreeze();
-    closeModalCalc()
-  }
-};
-
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown);
-});
-
+usePressEscape([modalFreeze.closeModalFreeze, modalCalc.closeModalCalc])
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.fade-enter, .fade-leave-to {
-  opacity: 0;
+.service-modal {
+  animation: fadeIn 0.3s ease-out;
 }
 
-.slide-enter-active, .slide-leave-active {
-  transition: transform 0.5s ease, opacity 0.5s ease;
-}
-
-.slide-enter {
-  transform: translateY(-20px);
-  opacity: 0;
-}
-
-.slide-leave-to {
-  transform: translateY(20px);
-  opacity: 0;
-}
 
 .modal-overlay {
   position: fixed;
@@ -180,6 +145,7 @@ onUnmounted(() => {
   display: flex;
   align-items: flex-start;
 }
+
 .service-modal {
   width: 1000px;
 }
@@ -205,9 +171,11 @@ onUnmounted(() => {
   color: #000000;
   margin-bottom: 20px;
 }
+
 .header__freeze-button {
   margin-right: 30px;
 }
+
 .modal-content-right__subtitle {
   font-weight: 400;
   color: #000000;
@@ -245,39 +213,6 @@ onUnmounted(() => {
   margin-right: 17px;
 }
 
-.modal-content-item__img2 {
-  width: 80px;
-  height: 69px;
-  margin-right: 15px;
-
-}
-
-.modal-content-item__img3 {
-  width: 65px;
-  height: 70px;
-  margin-right: 32px;
-}
-
-.modal-content-item__img4 {
-  width: 70px;
-  height: 67px;
-  margin-right: 27px;
-
-}
-
-.modal-content-item__img5 {
-  width: 65px;
-  height: 73px;
-  margin-right: 30px;
-
-}
-
-.modal-content-item__img6 {
-  width: 65px;
-  height: 67px;
-  margin-right: 30px;
-
-}
 
 .modal-content-item__row {
   display: flex;

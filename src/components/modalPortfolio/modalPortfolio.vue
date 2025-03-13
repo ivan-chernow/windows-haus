@@ -1,23 +1,22 @@
 <template>
-  <div class="modal-overlay" @click="$emit('close')">
+  <div class="modal-overlay modal" @click="$emit('close')">
     <div class="service-modal" @click.stop>
-
-        <svg
-            width="23"
-            height="23"
-            viewBox="0 0 23 23"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="modal__cross-icon"
-            @click="$emit('close')"
-        >
-          <path
-              d="M21.75 1.14355L1.25 21.6436M1.25 1.14355L21.75 21.6436"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-          />
-        </svg>
+      <svg
+          width="23"
+          height="23"
+          viewBox="0 0 23 23"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="modal__cross-icon"
+          @click="$emit('close')"
+      >
+        <path
+            d="M21.75 1.14355L1.25 21.6436M1.25 1.14355L21.75 21.6436"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+      </svg>
       <div class="services-modal__content">
         <ModalServiceCarousel v-if="props.selectedProject?.imagesModal"
                               :imagesModal="props.selectedProject.imagesModal"/>
@@ -54,17 +53,17 @@
           <p class="modal-content-right__subtitle">Категории объекта:</p>
           <p class="modal-content-right__category">{{ props.selectedProject?.category }}</p>
           <div class='modal-content-right__row'>
-            <FreezeButton class="header__freeze-button" @click="openModalFreeze" width="169px" height="40px"
+            <FreezeButton class="header__freeze-button" @click="modalFreeze.openModalFreeze" width="169px" height="40px"
                           title="Заявка на замер"/>
             <transition name="fade">
-              <ModalMenuFreeze v-if="showModalFreeze" @close="closeModalFreeze"/>
+              <ModalMenuFreeze v-if="modalFreeze.showModalFreeze" @close="modalFreeze.closeModalFreeze"/>
             </transition>
-            <PriceButton class="header_calc-button" @click="openModalCalc" width="143px" height="40px" img="img"
+            <PriceButton class="header_calc-button" @click="modalCalc.openModalCalc" width="143px" height="40px"
+                         img="img"
                          title=""/>
             <transition name="fade">
-              <ModalMenuCalc v-if="showModalCalc" @close="closeModalCalc" img="img" title=""/>
+              <ModalMenuCalc v-if="modalCalc.showModalCalc" @close="modalCalc.closeModalCalc" img="img" title=""/>
             </transition>
-
           </div>
         </div>
       </div>
@@ -79,9 +78,11 @@ import {defineProps} from "vue";
 import ModalServiceCarousel from "~/components/ModalServices/ModalServiceCarousel.vue";
 import type {Image} from "~/data/portfolio.data";
 import PriceButton from "~/components/PriceButton/PriceButton.vue";
+import { ModalCalcState, ModalFreezeState} from "~/store/modalState";
+import {usePressEscape} from "~/hooks/usePressEscape";
 
-const showModalFreeze = ref(false);
-const showModalCalc = ref(false);
+const modalFreeze = ModalFreezeState()
+const modalCalc = ModalCalcState()
 
 
 const props = defineProps<ModalServicesProps>();
@@ -97,62 +98,26 @@ interface ModalServicesProps {
   } | null
 }
 
-const openModalFreeze = () => {
-  showModalFreeze.value = true;
-};
-
-const closeModalFreeze = () => {
-  showModalFreeze.value = false;
-};
-const openModalCalc = () => {
-  showModalCalc.value = true;
-};
-
-const closeModalCalc = () => {
-  showModalCalc.value = false;
-};
-
-
-
-const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    closeModalFreeze();
-    closeModalCalc()
-  }
-};
-
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown);
-});
+usePressEscape([modalFreeze.closeModalFreeze, modalCalc.closeModalCalc]);
 
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.fade-enter, .fade-leave-to {
-  opacity: 0;
+.service-modal {
+  animation: fadeIn 0.3s ease-out;
 }
 
-.slide-enter-active, .slide-leave-active {
-  transition: transform 0.5s ease, opacity 0.5s ease;
-}
-
-.slide-enter {
-  transform: translateY(-20px);
-  opacity: 0;
-}
-
-.slide-leave-to {
-  transform: translateY(20px);
-  opacity: 0;
-}
 
 .modal-overlay {
   position: fixed;
@@ -198,21 +163,11 @@ onUnmounted(() => {
 
 
 .services-modal__content {
- width: 773px;
+  width: 773px;
   margin: 0 auto;
   display: flex;
   align-items: center;
 }
-
-
-.services-modal__content {
- width: 773px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 
 .modal-content__right {
   display: flex;

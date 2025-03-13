@@ -18,5 +18,3 @@ import Question from "~/section/Question/Question.vue";
 import Contacts from "~/section/Contacts/Contacts.vue";
 </script>
 
-<style scoped>
-</style>

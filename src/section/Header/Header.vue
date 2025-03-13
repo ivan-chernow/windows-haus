@@ -16,57 +16,42 @@
       </nav>
     </div>
     <div class="header__buttons">
-      <FreezeButton class="header__freeze-button" @click="openModalFreeze" width="172px" height="40px"
+      <FreezeButton class="header__freeze-button" @click="modalFreeze.openModalFreeze()" width="172px" height="40px"
                     title="Заявка на замер"/>
       <transition name="fade">
-        <ModalMenuFreeze v-if="modalFreeze.showModalFreeze" @close="closeModalFreeze"/>
+        <ModalMenuFreeze v-if="modalFreeze.showModalFreeze" @close="modalFreeze.closeModalFreeze()"/>
       </transition>
-      <CalculationButton @click="openModalCalc" width="172px" height="40px"/>
+      <CalculationButton @click="modalCalc.openModalCalc()" width="172px" height="40px"/>
       <transition name="fade">
-        <ModalMenuCalc v-if="modalCalc.showModalCalc" @close="closeModalCalc"/>
+        <ModalMenuCalc v-if="modalCalc.showModalCalc" @close="modalCalc.closeModalCalc()"/>
       </transition>
+
     </div>
   </header>
 </template>
 
 
 <script setup lang="ts">
-
-import {ref} from 'vue';
-import {useModalFreeze} from "~/store/modalFreeze";
-import {useModalCalc} from "~/store/modalCalc";
 import FreezeButton from "~/components/FreezeButton/FreezeButton.vue";
 import CalculationButton from "~/components/CalculationButton/CalculationButton.vue";
 import Logo from "~/components/Logo/Logo.vue";
 import ModalMenuCalc from "~/components/ModalMenuCalc/ModalMenuCalc.vue";
 import ModalMenuFreeze from "~/components/ModalMenuFreeze/ModalMenuFreeze.vue";
-import Burger from "~/components/Burger.vue";
+import {ModalCalcState, ModalFreezeState} from "~/store/modalState";
 
-const modalFreeze = useModalFreeze();
-const modalCalc = useModalCalc();
-const isMenuOpen = ref(false);
-const openModalFreeze = () => {
-  modalFreeze.openModalFreeze();
-};
-
-const closeModalFreeze = () => {
-  modalFreeze.closeModalFreeze();
-};
-
-const openModalCalc = () => {
-  modalCalc.openModalCalc();
-};
-
-const closeModalCalc = () => {
-  modalCalc.closeModalCalc();
-};
-
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value;
-};
+const modalFreeze = ModalFreezeState();
+const modalCalc = ModalCalcState();
 </script>
 
 <style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 .header {
   width: 1280px;
   margin: 0 auto;
@@ -141,30 +126,4 @@ const toggleMenu = () => {
   display: flex;
   align-items: center;
 }
-
-/* Бургер-меню */
-.header__burger {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-}
-
-.header__burger-line {
-  width: 25px;
-  height: 3px;
-  background: #000;
-  margin: 3px 0;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-
-
 </style>

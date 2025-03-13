@@ -2,18 +2,20 @@
   <div class="section-bid__right">
     <div class='section-bid-right__form'>
       <p class="section-bid-right__title">Вызвать замерщика на дом</p>
-      <input type="text" class='section-bid-right__input' v-model="form.name" placeholder="Представьтесь,пожалуйста">
-      <input type="text" class='section-bid-right__input' v-model="form.phone" placeholder="Номер телефона">
-      <input type="text" class='section-bid-right__input' v-model="form.email" placeholder="E-mail">
+      <input type="text" class='section-bid-right__input' v-model="bidFormState.form.name"
+             placeholder="Представьтесь,пожалуйста">
+      <input type="text" class='section-bid-right__input' v-model="bidFormState.form.phone"
+             placeholder="Номер телефона">
+      <input type="text" class='section-bid-right__input' v-model="bidFormState.form.email" placeholder="E-mail">
       <div class="section-bid-right__row">
         <input
             type="checkbox"
             id="customCheckbox"
             class="section-bid-right__checkbox"
-            v-model="isChecked"
+            v-model="bidFormState.isChecked"
         />
         <label for="customCheckbox" class="modal-row__label">
-          <div class="custom-checkbox" :class="{ 'checked': isChecked }">
+          <div class="custom-checkbox" :class="{ 'checked': bidFormState.isChecked }">
             <svg width="23" height="24" viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                  class="checkmark">
               <path d="M1.5 15L8.5 22L21.5 1" stroke="#2F2F51" stroke-width="2"/>
@@ -26,11 +28,11 @@
       <button
           class="right-agree__button"
           @click="submitForm"
-          :class="{ 'disabled': isSubmitting || isToastVisible }"
-          :disabled="isSubmitting || isToastVisible">
+          :class="{ 'disabled': bidFormState.isSubmitting || bidFormState.isToastVisible }"
+          :disabled="bidFormState.isSubmitting || bidFormState.isToastVisible">
         Отправить заявку
       </button>
-      <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+      <div v-if="bidFormState.successMessage" class="success-message">{{ bidFormState.successMessage }}</div>
       <img src="../../assets/img/Bid/section1_lineika.png" alt="img" class='right-agree__image'>
     </div>
   </div>
@@ -191,79 +193,58 @@
 </style>
 
 <script setup lang="ts">
-import {ref} from 'vue';
 import * as yup from 'yup';
 import {init, send} from 'emailjs-com';
-import {useToast} from 'vue-toastification';
+import {BidFormState} from "~/store/bidFormState";
+import {modalsSchema} from "~/utils/vaildation";
+import {showToast} from "~/utils/showToast";
 
-const toast = useToast();
 
-const schema = yup.object({
-  name: yup.string().required('Имя обязательно.'),
-  phone: yup.string()
-      .required('Номер телефона обязателен.')
-      .matches(/^[+]?[0-9]{10,15}$/, 'Некорректный номер телефона.'),
-  email: yup.string()
-      .required('Email обязателен.')
-      .email('Некорректный Email.'),
-});
-
-const isChecked = ref(false);
-const form = ref({
-  name: '',
-  phone: '',
-  email: ''
-});
-const successMessage = ref('');
-const isSubmitting = ref(false);
-const isToastVisible = ref(false);
+const bidFormState = BidFormState();
 
 const submitForm = async () => {
-  if (isSubmitting.value || isToastVisible.value) return;
-  isSubmitting.value = true;
+  if (bidFormState.isSubmitting || bidFormState.isToastVisible) return;
+  bidFormState.isSubmitting = true;
 
   try {
-    await schema.validate(form.value, {abortEarly: false});
-    if (!isChecked.value) {
-      showToast('Вы должны согласиться с обработкой персональных данных.', true);
+    await modalsSchema.validate(bidFormState.form, {abortEarly: false});
+    if (!bidFormState.isChecked) {
+      showToast('Вы должны согласиться с обработкой персональных данных.', true, bidFormState);
       return;
     }
 
     init("igmhWkl9x5vvkcYeT");
 
     const templateParams = {
-      from_name: form.value.name,
+      from_name: bidFormState.form.name,
       to_name: 'sutrame735@gmail.com',
-      message: `Заявка на замер. Номер Телефона: ${form.value.phone}. Почта: ${form.value.email}`,
-      reply_to: form.value.email,
+      message: `Заявка на замер. Номер Телефона: ${bidFormState.form.phone}. Почта: ${bidFormState.form.email}`,
+      reply_to: bidFormState.form.email,
     };
 
     await send('service_7wrfg5b', 'template_1il9zx9', templateParams);
 
-    form.value = {name: '', phone: '', email: ''};
-    isChecked.value = false;
-    showToast('Заявка на замер отправлена');
+    bidFormState.form =
+        {
+          name: '',
+          phone: '',
+          email: ''
+        };
+    bidFormState.isChecked = false;
+    showToast('Заявка на замер отправлена', false, bidFormState);
 
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       error.inner.forEach(err => {
-        showToast(err.message, true);
+        showToast(err.message, true, bidFormState);
       });
     } else {
-      showToast('Ошибка при отправке', true);
+      showToast('Ошибка при отправке', true, bidFormState);
     }
   } finally {
-    isSubmitting.value = false;
+    bidFormState.isSubmitting = false;
   }
 };
 
-const showToast = (message: string, isError = false) => {
-  isToastVisible.value = true;
-  const toastMethod = isError ? toast.error : toast.success;
-  toastMethod(message, {
-    onClose: () => {
-      isToastVisible.value = false;
-    }
-  });
-};
+
 </script>

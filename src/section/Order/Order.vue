@@ -313,7 +313,6 @@
 
 <style scoped>
 
-
 .order {
   width: 1280px;
   margin: 54px auto 0 auto;
@@ -405,7 +404,8 @@
 
 <script setup lang="ts">
 
-import {useModalCalc} from "~/store/modalCalc";
 
-const modalCalc = useModalCalc()
+import {ModalCalcState} from "~/store/modalState";
+
+const modalCalc = ModalCalcState()
 </script>

@@ -28,7 +28,6 @@ const buttonHeight = props.height
       <path d="M15.2858 13.598H18.5715" stroke="#EF7F1A" stroke-width="1.42857" stroke-miterlimit="22.9256"
             stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-
     <p class="calculation-button__par">Узнать цену</p>
   </div>
 </template>

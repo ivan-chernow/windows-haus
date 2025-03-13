@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import CalculationIcon from "~/components/CalculationIcon/CalculationIcon.vue";
 
-const props = defineProps<{
+const propsCalc = defineProps<{
   width?: string;
   height?: string;
 }>();
 
-const buttonWidth = props.width
-const buttonHeight = props.height
+const buttonWidth = propsCalc.width
+const buttonHeight = propsCalc.height
 </script>
 
 

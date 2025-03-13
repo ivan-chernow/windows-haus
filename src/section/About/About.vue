@@ -2,26 +2,26 @@
   <section class="about" id="about">
     <p class="about__title">О компании</p>
     <div class="about__variants">
-      <p class="about__variant" @click="setActiveSection('description')"
-         :class="{ active: activeSection === 'description' }">
+      <p class="about__variant" @click="aboutState.setActiveSection('description')"
+         :class="{ active: aboutState.activeSection === 'description' }">
         Описание
       </p>
-      <p class="about__variant" @click="setActiveSection('howMeWork')"
-         :class="{ active: activeSection === 'howMeWork' }">
+      <p class="about__variant" @click="aboutState.setActiveSection('howMeWork')"
+         :class="{ active: aboutState.activeSection === 'howMeWork' }">
         Как мы работаем
       </p>
-      <p class="about__variant" @click="setActiveSection('reviews')"
-         :class="{ active: activeSection === 'reviews' }">
+      <p class="about__variant" @click="aboutState.setActiveSection('reviews')"
+         :class="{ active: aboutState.activeSection === 'reviews' }">
         Отзывы
       </p>
-      <p class="about__variant" @click="setActiveSection('certificates')"
-         :class="{ active: activeSection === 'certificates' }">
+      <p class="about__variant" @click="aboutState.setActiveSection('certificates')"
+         :class="{ active: aboutState.activeSection === 'certificates' }">
         Сертификаты
       </p>
     </div>
     <transition name="fade" mode="out-in">
-      <div :key="activeSection" class="content">
-        <div class="about__block" v-if="activeSection === 'description'">
+      <div :key="aboutState.activeSection" class="content">
+        <div class="about__block" v-if="aboutState.activeSection === 'description'">
           <div class="about__block-description">
             <div class="about__left">
               <svg width="90" height="63" viewBox="0 0 90 63" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +131,7 @@
               </li>
               <li class="about__item">
                 <svg width="85" height="96" viewBox="0 0 85 96" fill="none"
-                     class="about-item__img" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                     class="about-item__img">
                   <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M1.23218 7.3317H18.132V11.4314H50.3372V7.3317H67.738V57.1655C66.8725 57.0288 65.9614 56.9833 65.0504 56.9833C63.365 56.9833 61.6795 57.2111 60.1308 57.621V16.7609H17.5853L9.29488 23.7759V75.5685H46.1464C46.1464 75.7051 46.1464 75.7962 46.1464 75.8873C46.1464 78.6205 46.693 81.2169 47.7407 83.5856H1.23218V7.3317V7.3317Z"
                         stroke="#EF7F1A" stroke-width="1.37339" stroke-miterlimit="22.9256" stroke-linecap="round"
@@ -364,16 +364,16 @@
               </li>
             </ul>
             <div class="button_block">
-              <FreezeButton class="header__freeze-button" @click="freezeState.openModalFreeze" width="312px"
+              <FreezeButton class="header__freeze-button" @click="modalFreezeState.openModalFreeze" width="312px"
                             height="54px"
                             title="Оформить заявку на замер"/>
               <transition name="fade">
-                <ModalMenuFreeze v-if="freezeState.showModalFreeze" @close="freezeState.closeModalFreeze"/>
+                <ModalMenuFreeze v-if="modalFreezeState.showModalFreeze" @close="modalFreezeState.closeModalFreeze"/>
               </transition>
             </div>
           </div>
         </div>
-        <div class="about__block" v-if="activeSection === 'howMeWork'">
+        <div class="about__block" v-if="aboutState.activeSection === 'howMeWork'">
           <div class="about__work">
             <h1 class="about-work__header">Как мы работаем</h1>
             <ul class="about-work__list">
@@ -574,40 +574,41 @@
             </ul>
           </div>
         </div>
-        <div class="about__block" v-if="activeSection === 'reviews'">
+        <div class="about__block" v-if="aboutState.activeSection === 'reviews'">
           <transition name="slide-fade" mode="out-in">
-            <div class="about__reviews" :key="currentIndex">
+            <div class="about__reviews" :key="aboutState.currentIndexReview">
               <div class="about-reviews__row">
                 <div class="about-reviews__row-left">
-                  <h3 class="about-reviews__name">{{ currentReview.name }}</h3>
-                  <p class="about-reviews__date">{{ currentReview.date }}</p>
-                  <p class="about-reviews__contract">{{ currentReview.contract }}</p>
+                  <h3 class="about-reviews__name">{{ aboutState.currentReview.name }}</h3>
+                  <p class="about-reviews__date">{{ aboutState.currentReview.date }}</p>
+                  <p class="about-reviews__contract">{{ aboutState.currentReview.contract }}</p>
                 </div>
                 <div class="about-reviews__row-right">
-                  <div class="about-reviews__button" @click="openModal">
+                  <div class="about-reviews__button" @click="modalReviewsState.openModalReviews">
                     <ReviewsIcon class="about-reviews__button-img" stroke="#ffffff"/>
                     <p class="about-reviews__button-text">Оставить отзыв</p>
                   </div>
                   <transition name="fade" mode="out-in">
-                    <ModalReviews v-if="isModalOpen" @close="closeModal"/>
+                    <ModalReviews v-if="modalReviewsState.showModalReviews"
+                                  @close="modalReviewsState.closeModalReviews"/>
                   </transition>
                 </div>
               </div>
               <div class="about-reviews__text-block">
                 <svg width="26" height="50" viewBox="0 0 26 50" fill="none" xmlns="http://www.w3.org/2000/svg"
-                     @click="prevReview" class="about-reviews-text-block__left-img">
+                     @click="aboutState.prevReview" class="about-reviews-text-block__left-img">
                   <path d="M25.25 1.02661L1.25 25.0266L25.25 49.0266" stroke="black"/>
                 </svg>
-                <p class="about-reviews__text">{{ currentReview.text }}</p>
+                <p class="about-reviews__text">{{ aboutState.currentReview.text }}</p>
                 <svg width="26" height="50" viewBox="0 0 26 50" fill="none" xmlns="http://www.w3.org/2000/svg"
-                     @click="nextReview" class="about-reviews-text-block__right-img">
+                     @click="aboutState.nextReview" class="about-reviews-text-block__right-img">
                   <path d="M1.25 1.02661L25.25 25.0266L1.25 49.0266" stroke="black"/>
                 </svg>
               </div>
             </div>
           </transition>
         </div>
-        <div class="about__block" v-if="activeSection === 'certificates'">
+        <div class="about__block" v-if="aboutState.activeSection === 'certificates'">
           <div class="about-certificates">
             <svg
                 width="26"
@@ -615,7 +616,7 @@
                 viewBox="0 0 26 50"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                @click="prevImage"
+                @click="aboutState.prevImage"
                 class="about-certificates__galka-left"
             >
               <path d="M25.25 1.02661L1.25 25.0266L25.25 49.0266" stroke="black"/>
@@ -623,12 +624,12 @@
 
             <div class="about-certificates__images">
               <img
-                  v-for="(image, index) in images"
+                  v-for="(image, index) in aboutState.images"
                   :key="index"
                   :src="image"
                   alt="img"
                   class="about-certificates__img"
-                  :class="{ active: index === currentImageIndex }"
+                  :class="{ active: index === aboutState.currentImageIndex }"
               />
             </div>
 
@@ -638,7 +639,7 @@
                 viewBox="0 0 26 50"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                @click="nextImage"
+                @click="aboutState.nextImage"
                 class="about-certificates__galka-right"
             >
               <path d="M1.25 1.02661L25.25 25.0266L1.25 49.0266" stroke="black"/>
@@ -690,17 +691,21 @@
 
 }
 
+.about__variant.active:hover {
+  transform: scale(1);
+  color: white;
+  transition: all 0.3s ease;
+
+}
+
 .about__variant:not(:last-child) {
   margin-right: 45px;
 }
 
 .about__variant:hover {
   transform: scale(1.1);
-
-  color: #FFFFFF;
-  padding: 10px 20px;
-  background-color: #EF7F04;
-  transition: all 0.2s ease;
+  color: #EF7F04;
+  transition: all 0.3s ease;
 }
 
 .about__block {
@@ -1091,66 +1096,18 @@
 }
 
 
-.about-reviews__navigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-
 </style>
 
 
 <script setup lang="ts">
-import {ref} from 'vue';
-import {useModalFreeze} from "~/store/modalFreeze";
 import FreezeButton from "~/components/FreezeButton/FreezeButton.vue";
 import ModalMenuFreeze from "~/components/ModalMenuFreeze/ModalMenuFreeze.vue";
-import img1 from '../../assets/img/About/sertificates/sertificates1.png';
-import img2 from '../../assets/img/About/sertificates/sertificates2.png';
-import img3 from '../../assets/img/About/sertificates/sertificates3.png';
-import img4 from '../../assets/img/About/sertificates/sertificates4.png';
-import img5 from '../../assets/img/About/sertificates/sertificates5.png';
-import {reviews} from "~/data/about.data";
+import {ModalFreezeState, ModalReviewsState} from "~/store/modalState";
+import {AboutState} from "~/store/aboutState";
 
-const isModalOpen = ref(false);
-const openModal = () => {
-  isModalOpen.value = true;
-};
-
-const closeModal = () => {
-  isModalOpen.value = false;
-};
+const modalFreezeState = ModalFreezeState();
+const modalReviewsState = ModalReviewsState()
+const aboutState = AboutState();
 
 
-const currentIndex = ref(0);
-
-const currentReview = computed(() => {
-  return reviews.value[currentIndex.value];
-});
-
-const prevReview = () => {
-  currentIndex.value = (currentIndex.value - 1 + reviews.value.length) % reviews.value.length;
-};
-
-const nextReview = () => {
-  currentIndex.value = (currentIndex.value + 1) % reviews.value.length;
-};
-
-const images = ref([img1, img2, img3, img4, img5]);
-const currentImageIndex = ref(2);
-
-const prevImage = () => {
-  currentImageIndex.value = (currentImageIndex.value - 1 + images.value.length) % images.value.length;
-};
-
-const nextImage = () => {
-  currentImageIndex.value = (currentImageIndex.value + 1) % images.value.length;
-};
-
-const activeSection = ref('description'); // Начальная секция
-const freezeState = useModalFreeze();
-const setActiveSection = (section: string) => {
-  activeSection.value = section;
-};
 </script>

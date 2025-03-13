@@ -90,6 +90,14 @@
 .about__variant.active {
   background-color: #EF7F04;
   color: #FFFFFF;
+
+}
+
+.about__variant.active:hover {
+  transform: scale(1);
+  color: white;
+  transition: all 0.3s ease;
+
 }
 
 .about__variant:not(:last-child) {
@@ -98,11 +106,12 @@
 
 .about__variant:hover {
   transform: scale(1.1);
-  color: #FFFFFF;
-  padding: 10px 20px;
-  background-color: #EF7F04;
-  transition: all 0.2s ease;
+  color: #EF7F04;
+  transition: all 0.3s ease;
 }
+
+
+
 
 .about__block {
   display: flex;

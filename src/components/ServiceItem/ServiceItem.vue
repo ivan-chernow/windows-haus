@@ -1,5 +1,5 @@
 <template>
-  <li class="services__item" @click="$emit('click')">
+  <li class="services__item"  @click="$emit('click')">
     <div class="services__item-bg" :style="{ backgroundImage: 'url(' + props.imagesModal.src + ')' }"></div>
     <div class='services-item__content'>
       <div class='services-item__row'>
@@ -30,6 +30,8 @@ const props = defineProps<ServicesProps>();
 </script>
 
 <style scoped>
+
+
 .services__item {
   display: flex;
   flex-direction: column;

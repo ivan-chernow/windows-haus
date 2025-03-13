@@ -25,18 +25,18 @@
         <CalculationIcon class="modal_calc-button"/>
         <p class="modal-row__title">Заказать расчет</p>
       </div>
-      <input type="text" v-model="form.name" class="modal-row__input" placeholder="Ваше имя"/>
-      <input type="text" v-model="form.phone" class="modal-row__input" placeholder="Номер телефона"/>
-      <input type="text" v-model="form.email" class="modal-row__input" placeholder="Email"/>
+      <input type="text" v-model="modalCalc.form.name" class="modal-row__input" placeholder="Ваше имя"/>
+      <input type="text" v-model="modalCalc.form.phone" class="modal-row__input" placeholder="Номер телефона"/>
+      <input type="text" v-model="modalCalc.form.email" class="modal-row__input" placeholder="Email"/>
       <div class="modal__row">
         <input
             type="checkbox"
             id="customCheckbox"
             class="modal-row__checkbox"
-            v-model="isChecked"
+            v-model="modalCalc.isChecked"
         />
-        <label for="customCheckbox" class="modal-row__label" @click="isChecked = !isChecked">
-          <div class="custom-checkbox" :class="{ 'checked': isChecked }">
+        <label for="customCheckbox" class="modal-row__label">
+          <div class="custom-checkbox" :class="{ 'checked': modalCalc.isChecked }">
             <svg
                 width="15"
                 height="15"
@@ -63,16 +63,31 @@
       <button
           class="modal__button"
           @click="submitForm"
-          :class="{ 'disabled': isSubmitting || isToastVisible }"
-          :disabled="isSubmitting || isToastVisible">
+          :class="{ 'disabled': modalCalc.isSubmitting || modalCalc.isToastVisible }"
+          :disabled="modalCalc.isSubmitting || modalCalc.isToastVisible">
         Заказать расчет
       </button>
-      <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+      <div v-if="modalCalc.successMessage" class="success-message">{{ modalCalc.successMessage }}</div>
     </div>
   </div>
 </template>
 
 <style scoped>
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal {
+  animation: fadeIn 0.3s ease-out;
+}
 
 .modal__overlay {
   position: fixed;
@@ -175,10 +190,6 @@
   background-color: white;
 }
 
-.custom-checkbox.checked {
-
-}
-
 .checkmark {
   display: none;
 }
@@ -240,84 +251,63 @@
 
 
 <script setup lang="ts">
-import {ref} from 'vue';
 import * as yup from 'yup';
 import {init, send} from 'emailjs-com';
 import {useToast} from 'vue-toastification';
 import CalculationIcon from "~/components/CalculationIcon/CalculationIcon.vue";
+import {modalsSchema} from "~/utils/vaildation";
+import {ref} from "vue";
+import {ModalCalcState} from "~/store/modalState";
+import {usePressEscape} from "~/hooks/usePressEscape";
+import {showToast} from "~/utils/showToast";
 
 const toast = useToast();
 const emit = defineEmits();
-
-const schema = yup.object({
-  name: yup.string().required('Имя обязательно.'),
-  phone: yup.string()
-      .required('Номер телефона обязателен.')
-      .matches(/^[+]?[0-9]{10,15}$/, 'Некорректный номер телефона.'),
-  email: yup.string()
-      .required('Email обязателен.')
-      .email('Некорректный Email.'),
-});
-
-const isChecked = ref(false);
 const hover = ref(false);
-const form = ref({
-  name: '',
-  phone: '',
-  email: ''
-});
-const successMessage = ref('');
-const isSubmitting = ref(false);
-const isToastVisible = ref(false);
+
+const modalCalc = ModalCalcState();
+usePressEscape([modalCalc.closeModalCalc])
+
 
 const submitForm = async () => {
-  if (isSubmitting.value || isToastVisible.value) return;
-  isSubmitting.value = true;
+  if (modalCalc.isSubmitting || modalCalc.isToastVisible) return;
+  modalCalc.isSubmitting = true;
 
   try {
-    await schema.validate(form.value, {abortEarly: false});
-    if (!isChecked.value) {
-      showToast('Вы должны согласиться с обработкой персональных данных.', true);
+    await modalsSchema.validate(modalCalc.form, {abortEarly: false});
+    if (!modalCalc.isChecked) {
+      showToast('Вы должны согласиться с обработкой персональных данных.', true, modalCalc);
       return;
     }
 
     init("igmhWkl9x5vvkcYeT");
 
     const templateParams = {
-      from_name: form.value.name,
+      from_name: modalCalc.form.name,
       to_name: 'sutrame735@gmail.com',
-      message: `Заявка на расчет. Номер Телефона: ${form.value.phone}. Почта: ${form.value.email}`,
-      reply_to: form.value.email,
+      message: `Заявка на расчет. Номер Телефона: ${modalCalc.form.phone}. Почта: ${modalCalc.form.email}`,
+      reply_to: modalCalc.form.email,
     };
 
     await send('service_7wrfg5b', 'template_1il9zx9', templateParams);
 
-    form.value = {name: '', phone: '', email: ''};
-    isChecked.value = false;
-    showToast('Заявка на расчет отправлена');
+    modalCalc.form = {name: '', phone: '', email: ''};
+    modalCalc.isChecked = false;
+    showToast('Заявка на расчет отправлена', false, modalCalc);
     emit('close');
 
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       error.inner.forEach(err => {
-        showToast(err.message, true);
+        showToast(err.message, true, modalCalc);
       });
     } else {
-      showToast('Ошибка при отправке', true);
+      showToast('Ошибка при отправке', true, modalCalc);
     }
   } finally {
-    isSubmitting.value = false;
+    modalCalc.isSubmitting = false;
   }
 };
 
 
-const showToast = (message: string, isError = false) => {
-  isToastVisible.value = true;
-  const toastMethod = isError ? toast.error : toast.success;
-  toastMethod(message, {
-    onClose: () => {
-      isToastVisible.value = false;
-    }
-  });
-};
 </script>

@@ -1,6 +1,6 @@
 import {ref} from 'vue';
 
-interface ReviewsTypes {
+export interface ReviewsTypes {
 	name: string;
 	date: string;
 	contract: string;

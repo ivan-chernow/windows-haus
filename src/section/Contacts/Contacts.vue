@@ -47,7 +47,6 @@
           <a href="https://vk.com" class="contacts-left__numbers__link left-row__img" target="_blank">
             <svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" fill="none">
               <g>
-                <title>Layer 1</title>
                 <path id="svg_1" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="22.9256"
                       stroke-width="2" stroke="#EF7F1A"
                       d="m21.7478,1.00366l-21.11285,0l0,19.84284l21.11285,0l0,-19.84284z"/>
@@ -61,7 +60,6 @@
           <a href="https://www.facebook.com/" class="contacts-left__numbers__link left-row__img" target="_blank">
             <svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" fill="none">
               <g>
-                <title>Layer 1</title>
                 <path id="svg_1" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="22.9256"
                       stroke-width="2" stroke="#EF7F1A"
                       d="m21.7478,1.00366l-21.11285,0l0,19.84284l21.11285,0l0,-19.84284z"/>
@@ -75,7 +73,6 @@
           <a href="https://www.instagram.com/" class="contacts-left__numbers__link left-row__img" target="_blank">
             <svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" fill="none">
               <g>
-                <title>Layer 1</title>
                 <path id="svg_1" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="22.9256"
                       stroke-width="2" stroke="#EF7F1A"
                       d="m21.7478,1.00366l-21.11285,0l0,19.84284l21.11285,0l0,-19.84284z"/>
@@ -95,7 +92,6 @@
           <a href="https://web.telegram.org/" class="contacts-left__numbers__link left-row__img" target="_blank">
             <svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" fill="none">
               <g>
-                <title>Layer 1</title>
                 <path id="svg_1" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="22.9256"
                       stroke-width="2" stroke="#EF7F1A"
                       d="m21.7478,1.00366l-21.11285,0l0,19.84284l21.11285,0l0,-19.84284z"/>
@@ -110,7 +106,6 @@
           <a href="https://www.youtube.com/" class="contacts-left__numbers__link left-row__img" target="_blank">
             <svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" fill="none">
               <g>
-                <title>Layer 1</title>
                 <path id="svg_1" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="22.9256"
                       stroke-width="2" stroke="#EF7F1A"
                       d="m21.7478,1.00366l-21.11285,0l0,19.84284l21.11285,0l0,-19.84284z"/>
@@ -125,7 +120,6 @@
           <a href="https://ok.ru/" class="contacts-left__numbers__link left-row__img" link="_rel" target="_blank">
             <svg width="23.000000000000004" height="22" xmlns="http://www.w3.org/2000/svg" fill="none">
               <g>
-                <title>Layer 1</title>
                 <path id="svg_1" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="22.9256"
                       stroke-width="2" stroke="#EF7F1A"
                       d="m21.7478,1.00366l-21.11285,0l0,19.84284l21.11285,0l0,-19.84284z"/>
@@ -153,11 +147,11 @@
       <div class="contacts__right">
         <div class='contacts-right__form'>
           <p class="contacts-right__title">Остались вопросы?</p>
-          <input type="text" class='contacts-right__input' v-model="form.name " placeholder="Ваше имя" maxlength="20">
-          <input type="text" class='contacts-right__input' v-model="form.email" placeholder="E-mail" maxlength="40">
-          <textarea type="text" class='contacts-right__input contacts-right__input-text' v-model="form.text"
+          <input type="text" class='contacts-right__input' v-model="contactState.form.name " placeholder="Ваше имя" maxlength="20">
+          <input type="text" class='contacts-right__input' v-model="contactState.form.email" placeholder="E-mail" maxlength="40">
+          <textarea type="text" class='contacts-right__input contacts-right__input-text' v-model="contactState.form.text"
                     maxlength="500"
-                    placeholder="Ваш отзыв"
+                    placeholder="Сообщение"
           ></textarea>
           <div class="section-bid-right__row">
             <input
@@ -166,7 +160,7 @@
                 class="section-bid-right__checkbox"
             />
             <label for="customCheckbox" class="modal-row__label">
-              <div class="custom-checkbox" :class="{ 'checked': isChecked }" @click="isChecked = !isChecked">
+              <div class="custom-checkbox" :class="{ 'checked': contactState.isChecked }" @click="contactState.isChecked = !contactState.isChecked">
                 <svg width="23" height="24" viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                      class="checkmark">
                   <path d="M1.5 15L8.5 22L21.5 1" stroke="#000000" stroke-width="2"/>
@@ -181,11 +175,11 @@
           <button
               class="right-agree__button"
               @click="submitForm"
-              :class="{ 'disabled': isSubmitting || isToastVisible }"
-              :disabled="isSubmitting || isToastVisible">
+              :class="{ 'disabled': contactState.isSubmitting || contactState.isToastVisible }"
+              :disabled="contactState.isSubmitting || contactState.isToastVisible">
             Отправить сообщение
           </button>
-          <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+          <div v-if="contactState.successMessage" class="success-message">{{ contactState.successMessage }}</div>
         </div>
       </div>
     </div>
@@ -195,8 +189,8 @@
 
 <style scoped>
 .contacts {
- width: 1280px;
-  margin: 86px auto 0px auto;
+  width: 1280px;
+  margin: 86px auto 0 auto;
   text-align: center;
   padding-bottom: 121px;
 }
@@ -294,6 +288,7 @@
   padding-top: 10px;
 
 }
+
 .contacts-left__text:hover {
   color: #EF7F1A;
   transition: color 0.2s ease-in-out;
@@ -485,13 +480,14 @@
 }
 
 </style>
+
 <script setup lang="ts">
-import {ref} from 'vue';
 import * as yup from 'yup';
 import {init, send} from 'emailjs-com';
-import {useToast} from 'vue-toastification';
+import {ContactState} from "~/store/contactState";
+import {showToast} from "~/utils/showToast";
 
-const toast = useToast();
+const contactState = ContactState();
 
 const schema = yup.object({
   name: yup.string().required('Имя обязательно.'),
@@ -501,62 +497,46 @@ const schema = yup.object({
   text: yup.string().required('Отзыв обязателен'),
 
 });
-const isChecked = ref(false);
-const form = ref({
-  name: '',
-  email: '',
-  text: ''
-});
-const successMessage = ref('');
-const isSubmitting = ref(false);
-const isToastVisible = ref(false);
+
 
 const submitForm = async () => {
-  if (isSubmitting.value || isToastVisible.value) return;
-  isSubmitting.value = true;
+  if (contactState.isSubmitting || contactState.isToastVisible) return;
+  contactState.isSubmitting = true;
 
   try {
-    await schema.validate(form.value, {abortEarly: false});
-    if (!isChecked.value) {
-      showToast('Вы должны согласиться с обработкой персональных данных.', true);
+    await schema.validate(contactState.form, {abortEarly: false});
+    if (!contactState.isChecked) {
+      showToast('Вы должны согласиться с обработкой персональных данных.', true, contactState);
       return;
     }
 
     init("igmhWkl9x5vvkcYeT");
 
     const templateParams = {
-      from_name: form.value.name,
+      from_name: contactState.form.name,
       to_name: 'sutrame735@gmail.com',
-      message: `Отзыв.\nПочта: ${form.value.email}\n ${form.value.text}`,
-      reply_to: form.value.email,
+      message: `Отзыв.\nПочта: ${contactState.form.email}\n ${contactState.form.text}`,
+      reply_to: contactState.form.email,
     };
 
     await send('service_7wrfg5b', 'template_1il9zx9', templateParams);
 
-    form.value = {name: '', email: '', text: ''};
-    isChecked.value = false;
-    showToast('Отзыв отправлен.Спасибо!');
+    contactState.form = {name: '', email: '', text: ''};
+    contactState.isChecked = false;
+    showToast('Отзыв отправлен.Спасибо!', false, contactState);
 
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       error.inner.forEach(err => {
-        showToast(err.message, true);
+        showToast(err.message, true, contactState);
       });
     } else {
-      showToast('Ошибка при отправке отзыва', true);
+      showToast('Ошибка при отправке отзыва', true, contactState);
     }
   } finally {
-    isSubmitting.value = false;
+    contactState.isSubmitting = false;
   }
 };
 
-const showToast = (message: string, isError = false) => {
-  isToastVisible.value = true;
-  const toastMethod = isError ? toast.error : toast.success;
-  toastMethod(message, {
-    onClose: () => {
-      isToastVisible.value = false;
-    }
-  });
-};
+
 </script>

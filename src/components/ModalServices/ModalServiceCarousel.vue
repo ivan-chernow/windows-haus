@@ -1,5 +1,5 @@
 <template>
-  <div class="gallery" @touchstart="startTouch" @touchmove="moveTouch" @touchend="endTouch">
+  <div class="gallery" >
     <div class="image-display">
       <div class="images-container" :style="containerStyle">
         <img
@@ -12,11 +12,10 @@
       </div>
       <div class="pagination">
         <span
-            v-for="(image, index) in images"
+            v-for="(_,  index) in images"
             :key="index"
             :class="{ active: currentSlide === index }"
-            @mouseenter="changeSlide(index)"
-            @mouseleave="changeSlide(currentSlide)"
+            @click="changeSlide(index)"
         ></span>
       </div>
       <button class="prev" @click="prevSlide">❮</button>
@@ -26,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, defineProps, ref} from 'vue';
+import { computed, defineProps, ref } from 'vue';
 
 interface Image {
   src: string;
@@ -34,7 +33,7 @@ interface Image {
 }
 
 interface ModalServicesCarouselProps {
-  imagesModal: Image[]
+  imagesModal: Image[];
 }
 
 const props = defineProps<ModalServicesCarouselProps>();
@@ -56,30 +55,7 @@ const prevSlide = () => {
   currentSlide.value = (currentSlide.value - 1 + images.length) % images.length;
 };
 
-let startX: number;
 
-const startTouch = (event: TouchEvent) => {
-  startX = event.touches[0].clientX;
-};
-
-const moveTouch = (event: TouchEvent) => {
-  event.preventDefault();
-};
-
-const endTouch = (event: TouchEvent) => {
-  const endX = event.changedTouches[0].clientX;
-  const diffX = startX - endX;
-
-  if (Math.abs(diffX) > 50) {
-    if (diffX > 0) {
-      nextSlide();
-    } else {
-      prevSlide();
-    }
-  }
-};
-
-// Вычисляем стиль контейнера для анимации прокрутки
 const containerStyle = computed(() => {
   return {
     transform: `translateX(-${currentSlide.value * 100}%)`,
@@ -87,7 +63,6 @@ const containerStyle = computed(() => {
   };
 });
 </script>
-
 
 <style scoped>
 .gallery {
@@ -109,13 +84,15 @@ const containerStyle = computed(() => {
 
 .images-container {
   display: flex;
-  transition: transform 0.5s ease; /* Плавный переход */
+  width: 100%;
+  transition: transform 0.5s ease;
 }
 
 .image {
-  width: 307px;
+  width: 100%;
   height: 229px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .pagination {

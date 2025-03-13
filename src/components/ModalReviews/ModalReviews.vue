@@ -25,10 +25,10 @@
         <ReviewsIcon class="modal__row__img" stroke="#EF7F1A"/>
         <p class="modal-row__title">Добавьте Ваш отзыв</p>
       </div>
-      <input type="text" v-model="form.name" class="modal-row__input" placeholder="Ваше имя"/>
-      <input type="text" v-model="form.contract" class="modal-row__input" placeholder="Номер договора"/>
-      <input type="text" v-model="form.email" class="modal-row__input" placeholder="E-mail"/>
-      <textarea type="text" class='contacts-right__input contacts-right__input-text' v-model="form.reviews"
+      <input type="text" v-model="modalReviews.form.name" class="modal-row__input" placeholder="Ваше имя"/>
+      <input type="text" v-model="modalReviews.form.contract" class="modal-row__input" placeholder="Номер договора"/>
+      <input type="text" v-model="modalReviews.form.email" class="modal-row__input" placeholder="E-mail"/>
+      <textarea type="text" class='contacts-right__input contacts-right__input-text' v-model="modalReviews.form.reviews"
                 maxlength="500"
                 placeholder="Ваш отзыв"
       ></textarea>
@@ -37,10 +37,12 @@
             type="checkbox"
             id="customCheckbox"
             class="modal-row__checkbox"
-            v-model="isChecked"
         />
-        <label for="customCheckbox" class="modal-row__label" @click="isChecked = !isChecked">
-          <div class="custom-checkbox" :class="{ 'checked': isChecked }">
+
+        <label for="customCheckbox" class="modal-row__label">
+          <div class="custom-checkbox" :class="{ 'checked': modalReviews.isChecked }"
+               @click="modalReviews.isChecked = !modalReviews.isChecked"
+          >
             <svg
                 width="15"
                 height="15"
@@ -67,15 +69,30 @@
       <button
           class="modal__button"
           @click="submitForm"
-          :class="{ 'disabled': isSubmitting || isToastVisible }"
-          :disabled="isSubmitting || isToastVisible">
+          :class="{ 'disabled': modalReviews.isSubmitting || modalReviews.isToastVisible }"
+          :disabled="modalReviews.isSubmitting || modalReviews.isToastVisible">
         Оставить отзыв
       </button>
-      <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+      <div v-if="modalReviews.successMessage" class="success-message">{{ modalReviews.successMessage }}</div>
     </div>
   </div>
 </template>
+
 <style scoped>
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal {
+  animation: fadeIn 0.3s ease-out;
+}
 
 .modal__overlay {
   position: fixed;
@@ -213,6 +230,7 @@
   margin-right: 12px;
   position: relative;
   background-color: #E2E2E2;
+
 }
 
 .custom-checkbox.checked {
@@ -298,85 +316,60 @@
 
 
 <script setup lang="ts">
-import {ref} from 'vue';
 import * as yup from 'yup';
 import {init, send} from 'emailjs-com';
-import {useToast} from 'vue-toastification';
 import ReviewsIcon from "~/components/ReviewsIcon/ReviewsIcon.vue";
+import {reviewsSchema} from "~/utils/vaildation";
+import {ModalReviewsState} from "~/store/modalState";
+import {usePressEscape} from "~/hooks/usePressEscape";
+import {showToast} from "~/utils/showToast";
 
-const toast = useToast();
 const emit = defineEmits();
-
-const schema = yup.object({
-  name: yup.string().required('Имя обязательно.'),
-  contract: yup.string().required('Номер договора обязателен'),
-  email: yup.string()
-      .required('Email обязателен.')
-      .email('Некорректный Email.'),
-  reviews: yup.string().required('Напишите отзыв'),
-
-});
-
-const isChecked = ref(false);
 const hover = ref(false);
-const form = ref({
-  name: '',
-  contract: '',
-  email: '',
-  reviews: ''
-});
-const successMessage = ref('');
-const isSubmitting = ref(false);
-const isToastVisible = ref(false);
+
+const modalReviews = ModalReviewsState()
+
+usePressEscape([() => emit('close')]);
 
 const submitForm = async () => {
-  if (isSubmitting.value || isToastVisible.value) return;
-  isSubmitting.value = true;
-
+  if (modalReviews.isSubmitting || modalReviews.isToastVisible) return;
+  modalReviews.isSubmitting = true;
   try {
-    await schema.validate(form.value, {abortEarly: false});
-    if (!isChecked.value) {
-      showToast('Вы должны согласиться с обработкой персональных данных.', true);
+    await reviewsSchema.validate(modalReviews.form, {abortEarly: false});
+    if (!modalReviews.isChecked) {
+      showToast('Вы должны согласиться с обработкой персональных данных.', true, modalReviews);
       return;
     }
 
     init("igmhWkl9x5vvkcYeT");
 
     const templateParams = {
-      from_name: form.value.name,
+      from_name: modalReviews.form.name,
       to_name: 'sutrame735@gmail.com',
-      message: `На вашем сайте оставлен отзыв! Номер договора: ${form.value.contract}. Почта: ${form.value.email}
-      Отзыв: ${form.value.reviews}`,
-      reply_to: form.value.email,
+      message: `На вашем сайте оставлен отзыв! Номер договора: ${modalReviews.form.contract}. Почта: ${modalReviews.form.email}
+      Отзыв: ${modalReviews.form.reviews}`,
+      reply_to: modalReviews.form.email,
     };
 
     await send('service_7wrfg5b', 'template_1il9zx9', templateParams);
 
-    form.value = {name: '', contract: '', email: '', reviews: ''};
-    isChecked.value = false;
-    showToast('Ваш отзыв будет размещен после модерации!' + '\n' + 'Спасибо!');
+    modalReviews.form = {name: '', contract: '', email: '', reviews: ''};
+    modalReviews.isChecked = false;
+    showToast('Ваш отзыв будет размещен после модерации!' + '\n' + 'Спасибо!', false, modalReviews);
     emit('close');
 
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       error.inner.forEach(err => {
-        showToast(err.message, true);
+        showToast(err.message, true, modalReviews);
       });
     } else {
-      showToast('Ошибка при отправке', true);
+      showToast('Ошибка при отправке', true, modalReviews);
     }
   } finally {
-    isSubmitting.value = false;
+    modalReviews.isSubmitting = false;
   }
 };
 
-const showToast = (message: string, isError = false) => {
-  isToastVisible.value = true;
-  const toastMethod = isError ? toast.error : toast.success;
-  toastMethod(message, {
-    onClose: () => {
-      isToastVisible.value = false;
-    }
-  });
-};
+
 </script>

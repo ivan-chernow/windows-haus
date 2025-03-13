@@ -25,18 +25,18 @@
         <FreezeIcon class="modal__freeze-icon"/>
         <p class="modal-row__title">Вызвать замерщика на дом</p>
       </div>
-      <input type="text" v-model="form.name" class="modal-row__input" placeholder="Ваше имя"/>
-      <input type="text" v-model="form.phone" class="modal-row__input" placeholder="Номер телефона"/>
-      <input type="text" v-model="form.email" class="modal-row__input" placeholder="Email"/>
+      <input type="text" v-model="modalFreeze.form.name" class="modal-row__input" placeholder="Ваше имя"/>
+      <input type="text" v-model="modalFreeze.form.phone" class="modal-row__input" placeholder="Номер телефона"/>
+      <input type="text" v-model="modalFreeze.form.email" class="modal-row__input" placeholder="Email"/>
       <div class="modal__row">
         <input
             type="checkbox"
             id="customCheckbox"
             class="modal-row__checkbox"
-            v-model="isChecked"
+            v-model="modalFreeze.isChecked"
         />
-        <label for="customCheckbox" class="modal-row__label" @click="isChecked = !isChecked">
-          <div class="custom-checkbox" :class="{ 'checked': isChecked }">
+        <label for="customCheckbox" class="modal-row__label">
+          <div class="custom-checkbox" :class="{ 'checked': modalFreeze.isChecked }">
             <svg
                 width="15"
                 height="15"
@@ -54,24 +54,40 @@
               />
             </svg>
           </div>
-          <p class="modal-row__text">
+          <p class="modal-row__text" @click.stop>
             Я согласен(на) на обработку
             <a class="modal-row__span" href="/agreement">персональных данных</a>
           </p>
         </label>
       </div>
+
       <button
           class="modal__button"
           @click="submitForm"
-          :class="{ 'disabled': isSubmitting || isToastVisible }"
-          :disabled="isSubmitting || isToastVisible">
+          :class="{ 'disabled': modalFreeze.isSubmitting || modalFreeze.isToastVisible }"
+          :disabled="modalFreeze.isSubmitting || modalFreeze.isToastVisible">
         Отправить заявку
       </button>
-      <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+      <div v-if="modalFreeze.successMessage" class="success-message">{{ modalFreeze.successMessage }}</div>
     </div>
   </div>
 </template>
 <style scoped>
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal {
+  animation: fadeIn 0.3s ease-out;
+}
 
 .modal__overlay {
   position: fixed;
@@ -238,79 +254,57 @@ import {ref} from 'vue';
 import * as yup from 'yup';
 import FreezeIcon from "~/components/FreezeIcon/FreezeIcon.vue";
 import {init, send} from 'emailjs-com';
-import {useToast} from 'vue-toastification';
+import {modalsSchema} from "~/utils/vaildation";
+import {ModalFreezeState} from "~/store/modalState";
+import {usePressEscape} from "~/hooks/usePressEscape";
+import {showToast} from "~/utils/showToast";
 
-const toast = useToast();
 const emit = defineEmits();
-
-const schema = yup.object({
-  name: yup.string().required('Имя обязательно.'),
-  phone: yup.string()
-      .required('Номер телефона обязателен.')
-      .matches(/^[+]?[0-9]{10,15}$/, 'Некорректный номер телефона.'),
-  email: yup.string()
-      .required('Email обязателен.')
-      .email('Некорректный Email.'),
-});
-
-const isChecked = ref(false);
 const hover = ref(false);
-const form = ref({
-  name: '',
-  phone: '',
-  email: ''
-});
-const successMessage = ref('');
-const isSubmitting = ref(false);
-const isToastVisible = ref(false);
+
+const modalFreeze = ModalFreezeState()
+
+usePressEscape([modalFreeze.closeModalFreeze])
 
 const submitForm = async () => {
-  if (isSubmitting.value || isToastVisible.value) return;
-  isSubmitting.value = true;
+  if (modalFreeze.isSubmitting || modalFreeze.isToastVisible) return;
+  modalFreeze.isSubmitting = true;
 
   try {
-    await schema.validate(form.value, {abortEarly: false});
-    if (!isChecked.value) {
-      showToast('Вы должны согласиться с обработкой персональных данных.', true);
+    await modalsSchema.validate(modalFreeze.form, {abortEarly: false});
+    if (!modalFreeze.isChecked) {
+      showToast('Вы должны согласиться с обработкой персональных данных.', true, modalFreeze);
       return;
     }
 
     init("igmhWkl9x5vvkcYeT");
 
     const templateParams = {
-      from_name: form.value.name,
+      from_name: modalFreeze.form.name,
       to_name: 'sutrame735@gmail.com',
-      message: `Заявка на замер. Номер Телефона: ${form.value.phone}. Почта: ${form.value.email}`,
-      reply_to: form.value.email,
+      message: `Заявка на замер. Номер Телефона: ${modalFreeze.form.phone}. Почта: ${modalFreeze.form.email}`,
+      reply_to: modalFreeze.form.email,
     };
 
     await send('service_7wrfg5b', 'template_1il9zx9', templateParams);
 
-    form.value = {name: '', phone: '', email: ''};
-    isChecked.value = false;
-    showToast('Заявка на замер отправлена');
+    modalFreeze.form = {name: '', phone: '', email: ''};
+    modalFreeze.isChecked = false;
+    showToast('Заявка на замер отправлена', false, modalFreeze);
     emit('close');
 
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       error.inner.forEach(err => {
-        showToast(err.message, true);
+        showToast(err.message, true, modalFreeze);
       });
     } else {
-      showToast('Ошибка при отправке', true);
+      showToast('Ошибка при отправке', true, modalFreeze);
     }
   } finally {
-    isSubmitting.value = false;
+    modalFreeze.isSubmitting = false;
   }
 };
 
-const showToast = (message: string, isError = false) => {
-  isToastVisible.value = true;
-  const toastMethod = isError ? toast.error : toast.success;
-  toastMethod(message, {
-    onClose: () => {
-      isToastVisible.value = false;
-    }
-  });
-};
+
 </script>

@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import FreezeIcon from "~/components/FreezeIcon/FreezeIcon.vue";
-
-const props = defineProps<{
+ const propsButton = defineProps<{
   title?: string;
   width?: string;
   height?: string;
 }>();
 
-const buttonWidth = props.width
-const buttonHeight = props.height
+
+const buttonWidth = propsButton.width
+const buttonHeight = propsButton.height
 </script>
 
 <template>
   <div class="button-freeze" :style="{width: buttonWidth, height: buttonHeight}">
     <FreezeIcon class="button-freeze__img"/>
-    <p class=button-freeze__par>{{ props.title }}</p>
+    <p class=button-freeze__par>{{ propsButton.title }}</p>
   </div>
 </template>
 

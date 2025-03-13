@@ -2,9 +2,9 @@
 import {services} from "~/data/services.data";
 import ServiceItem from "~/components/ServiceItem/ServiceItem.vue";
 import ModalService from "~/components/ModalServices/ModalService.vue";
-import {useServices} from "~/store/useServices";
+import {ModalServicesState} from "~/store/modalState";
 
-const modalsService = useServices();
+const modalsService = ModalServicesState();
 </script>
 
 <template>
