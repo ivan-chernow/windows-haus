@@ -196,7 +196,7 @@
 .section-bid {
   min-width: 1280px;
   display: flex;
-  background-image: linear-gradient(rgba(59, 58, 99, 0.8), rgba(59, 58, 99, 0.8)), url("../../assets/img/Bid/section-img.png"), url("../../assets/img/Bid/bid-img2.png");
+  background-image: linear-gradient(rgba(59, 58, 99, 0.8), rgba(59, 58, 99, 0.8)), url("@/assets/img/Bid/section-img.png"), url("@/assets/img/Bid/bid-img2.png");
   background-position: left center, left center, right center;
   background-size: cover, contain, cover;
   background-repeat: no-repeat;

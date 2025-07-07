@@ -325,7 +325,7 @@
   width: 1280px;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(rgba(39, 39, 68, 0.9), rgba(39, 39, 68, 0.9)),  url("../../assets/img/Products/section4_img.png") no-repeat center center;
+  background: linear-gradient(rgba(39, 39, 68, 0.9), rgba(39, 39, 68, 0.9)),  url("@/assets/img/Products/section4_img.png") no-repeat center center;
   background-size: cover;
   border-radius: 3px;
   padding: 35px 78px 69px 42px;
