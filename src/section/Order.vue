@@ -1,7 +1,7 @@
 <template>
   <section class="order">
     <div class="order__block">
-      <img src="../../assets/img/Products/section4__tittle.png" alt="img" class="order__img">
+      <img src="@/assets/img/Products/section4__tittle.png" alt="img" class="order__img">
       <ul class="order__list">
         <li class="order__item order__item-mr1">
           <svg width="100" height="96" viewBox="0 0 100 96" fill="none" xmlns="http://www.w3.org/2000/svg"

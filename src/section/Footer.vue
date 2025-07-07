@@ -3,7 +3,7 @@
     <div class="footer-content">
       <div class="footer__left">
         <nuxt-link to="/">
-          <img src="../../assets/img/Footer/footer-logo.png" alt="Логотип" class="footer-left__img">
+          <img src="@/assets/img/Footer/footer-logo.png" alt="Логотип" class="footer-left__img">
         </nuxt-link>
         <p class="footer-left__title">© ООО “Окна Хаус”, 2011 - 2022</p>
       </div>

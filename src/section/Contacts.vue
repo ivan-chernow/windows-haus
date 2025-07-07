@@ -140,7 +140,7 @@
               </g>
             </svg>
           </a>
-          <img src="../../assets/img/Contacts/section8.job.png" alt="img" class="contacts-left__img-back"/>
+          <img src="@/assets/img/Contacts/section8.job.png" alt="img" class="contacts-left__img-back"/>
         </div>
       </div>
 

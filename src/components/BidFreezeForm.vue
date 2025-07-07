@@ -33,7 +33,7 @@
         Отправить заявку
       </button>
       <div v-if="bidFormState.successMessage" class="success-message">{{ bidFormState.successMessage }}</div>
-      <img src="../../assets/img/Bid/section1_lineika.png" alt="img" class='right-agree__image'>
+      <img src="@/assets/img/Bid/section1_lineika.png" alt="img" class='right-agree__image'>
     </div>
   </div>
 </template>

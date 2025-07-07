@@ -42,7 +42,7 @@
                 нас очень важно, чтобы Вы сделали правильный выбор.</p>
             </div>
             <div class="about__right">
-              <img src="../../assets/img/About/about_img1.png" alt="img" class="about-right__img">
+              <img src="@/assets/img/About/about_img1.png" alt="img" class="about-right__img">
             </div>
           </div>
           <div class="about-list__bottom">
