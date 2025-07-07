@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CalculationIcon from "~/components/CalculationIcon/CalculationIcon.vue";
+import CalculationIcon from "~/components/CalculationIcon.vue";
 
 const propsCalc = defineProps<{
   width?: string;

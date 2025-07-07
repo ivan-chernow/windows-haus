@@ -32,11 +32,11 @@
 
 
 <script setup lang="ts">
-import FreezeButton from "~/components/FreezeButton/FreezeButton.vue";
-import CalculationButton from "~/components/CalculationButton/CalculationButton.vue";
-import Logo from "~/components/Logo/Logo.vue";
-import ModalMenuCalc from "~/components/ModalMenuCalc/ModalMenuCalc.vue";
-import ModalMenuFreeze from "~/components/ModalMenuFreeze/ModalMenuFreeze.vue";
+import FreezeButton from "~/components/FreezeButton.vue";
+import CalculationButton from "~/components/CalculationButton.vue";
+import Logo from "~/components/Logo.vue";
+import ModalMenuCalc from "~/components/ModalMenuCalc.vue";
+import ModalMenuFreeze from "~/components/ModalMenuFreeze.vue";
 import {ModalCalcState, ModalFreezeState} from "~/store/modalState";
 
 const modalFreeze = ModalFreezeState();

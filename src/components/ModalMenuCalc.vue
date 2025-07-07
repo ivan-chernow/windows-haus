@@ -15,34 +15,28 @@
       >
         <path
             d="M21.75 1.14355L1.25 21.6436M1.25 1.14355L21.75 21.6436"
-            :stroke="hover ? '#ef7f1a' : 'black'"
+            :stroke="hover ? 'black' : 'white'"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
         />
       </svg>
       <div class="modal__row">
-        <ReviewsIcon class="modal__row__img" stroke="#EF7F1A"/>
-        <p class="modal-row__title">Добавьте Ваш отзыв</p>
+        <CalculationIcon class="modal_calc-button"/>
+        <p class="modal-row__title">Заказать расчет</p>
       </div>
-      <input type="text" v-model="modalReviews.form.name" class="modal-row__input" placeholder="Ваше имя"/>
-      <input type="text" v-model="modalReviews.form.contract" class="modal-row__input" placeholder="Номер договора"/>
-      <input type="text" v-model="modalReviews.form.email" class="modal-row__input" placeholder="E-mail"/>
-      <textarea type="text" class='contacts-right__input contacts-right__input-text' v-model="modalReviews.form.reviews"
-                maxlength="500"
-                placeholder="Ваш отзыв"
-      ></textarea>
+      <input type="text" v-model="modalCalc.form.name" class="modal-row__input" placeholder="Ваше имя"/>
+      <input type="text" v-model="modalCalc.form.phone" class="modal-row__input" placeholder="Номер телефона"/>
+      <input type="text" v-model="modalCalc.form.email" class="modal-row__input" placeholder="Email"/>
       <div class="modal__row">
         <input
             type="checkbox"
             id="customCheckbox"
             class="modal-row__checkbox"
+            v-model="modalCalc.isChecked"
         />
-
         <label for="customCheckbox" class="modal-row__label">
-          <div class="custom-checkbox" :class="{ 'checked': modalReviews.isChecked }"
-               @click="modalReviews.isChecked = !modalReviews.isChecked"
-          >
+          <div class="custom-checkbox" :class="{ 'checked': modalCalc.isChecked }">
             <svg
                 width="15"
                 height="15"
@@ -69,16 +63,17 @@
       <button
           class="modal__button"
           @click="submitForm"
-          :class="{ 'disabled': modalReviews.isSubmitting || modalReviews.isToastVisible }"
-          :disabled="modalReviews.isSubmitting || modalReviews.isToastVisible">
-        Оставить отзыв
+          :class="{ 'disabled': modalCalc.isSubmitting || modalCalc.isToastVisible }"
+          :disabled="modalCalc.isSubmitting || modalCalc.isToastVisible">
+        Заказать расчет
       </button>
-      <div v-if="modalReviews.successMessage" class="success-message">{{ modalReviews.successMessage }}</div>
+      <div v-if="modalCalc.successMessage" class="success-message">{{ modalCalc.successMessage }}</div>
     </div>
   </div>
 </template>
 
 <style scoped>
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -100,7 +95,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -108,15 +103,15 @@
 }
 
 .modal {
-  min-width: 595px;
-  max-height: 667px;
-  background-color: #FFFFFF;
+  min-width: 650px;
+  max-height: 580px;
+  background-color: #2F2F51;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  padding: 25px 19px 62px 20px;
+  padding: 25px 19px 69px 0;
   position: relative;
 }
 
@@ -132,22 +127,21 @@
 }
 
 .modal__row {
-  width: 400px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   margin-bottom: 30px;
 }
 
-.modal__row__img {
+.modal_calc-button {
   width: 30px;
-  height: 27px;
-  margin-right: 45px;
+  height: 26px;
+  margin-right: 20px;
 }
 
 .modal-row__title {
   padding-top: 5px;
-  color: #2F2F51;
+  color: #ffffff;
   font-weight: 700;
   font-size: 24px;
 }
@@ -156,7 +150,7 @@
   padding: 17px 17px;
   color: #424268;
   font-weight: 400;
-  background-color: #E2E2E2;
+  background-color: #ffffff;
   width: 395px;
   margin-bottom: 21px;
   border: 2px solid transparent;
@@ -178,42 +172,6 @@
   display: none;
 }
 
-.contacts-right__input-text {
-  height: 134px;
-  padding-bottom: 100px;
-  padding-left: 15px;
-  overflow: auto;
-  resize: none;
-
-}
-
-.contacts-right__input {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  margin-bottom: 15px;
-  color: #424268;
-  background-color: #E2E2E2;
-  font-weight: 400;
-  font-size: 14px;
-  padding: 12px 0 16px 12px;
-  width: 395px;
-  border: none;
-  outline: none;
-  position: relative;
-}
-
-.contacts-right__input-text::-webkit-scrollbar {
-  display: none;
-}
-
-.contacts-right__input-text::placeholder {
-  display: flex;
-  position: absolute;
-  left: 17px;
-  top: 16px;
-}
-
 .modal-row__label {
   display: flex;
   align-items: center;
@@ -229,12 +187,7 @@
   justify-content: center;
   margin-right: 12px;
   position: relative;
-  background-color: #E2E2E2;
-
-}
-
-.custom-checkbox.checked {
-  background-color: #E2E2E2;
+  background-color: white;
 }
 
 .checkmark {
@@ -248,18 +201,18 @@
 .modal-row__text {
   font-weight: 400;
   font-size: 14px;
-  color: #111E97;
+  color: #ffffff;
   padding-top: 5px;
 }
 
 .modal-row__span {
-  color: #EF7F1A;
+  color: #ef7f1a;
 }
 
 .modal__button {
   font-weight: 700;
-  color: #FFFFFF;
-  background-color: #EF7F1A;
+  color: #2F2F51;
+  background-color: #ffffff;
   padding: 16px 60px;
   border: none;
   border-radius: 3px;
@@ -276,6 +229,7 @@
 
 .modal__button.disabled:hover {
   color: #666666;
+
   transform: none;
   background-color: #cccccc;
 
@@ -292,82 +246,66 @@
   transform: scale(1.05);
 }
 
-.contacts-right__input-text {
-  height: 134px;
-  padding-bottom: 100px;
-  padding-left: 15px;
-  overflow: auto;
-  resize: none;
-  border: 2px solid transparent;
-  outline: none;
-  border-radius: 3px;
 
-}
-
-.contacts-right__input-text:focus {
-  border-color: #ef7f1a;
-  box-shadow: 0 0 5px rgba(239, 127, 26, 0.5);
-}
-
-.contacts-right__input-text:hover {
-  border-color: #ef7f1a;
-}
 </style>
 
 
 <script setup lang="ts">
 import * as yup from 'yup';
 import {init, send} from 'emailjs-com';
-import ReviewsIcon from "~/components/ReviewsIcon/ReviewsIcon.vue";
-import {reviewsSchema} from "~/utils/vaildation";
-import {ModalReviewsState} from "~/store/modalState";
+import {useToast} from 'vue-toastification';
+import CalculationIcon from "~/components/CalculationIcon.vue";
+import {modalsSchema} from "~/utils/vaildation";
+import {ref} from "vue";
+import {ModalCalcState} from "~/store/modalState";
 import {usePressEscape} from "~/hooks/usePressEscape";
 import {showToast} from "~/utils/showToast";
 
+const toast = useToast();
 const emit = defineEmits();
 const hover = ref(false);
 
-const modalReviews = ModalReviewsState()
+const modalCalc = ModalCalcState();
+usePressEscape([modalCalc.closeModalCalc])
 
-usePressEscape([() => emit('close')]);
 
 const submitForm = async () => {
-  if (modalReviews.isSubmitting || modalReviews.isToastVisible) return;
-  modalReviews.isSubmitting = true;
+  if (modalCalc.isSubmitting || modalCalc.isToastVisible) return;
+  modalCalc.isSubmitting = true;
+
   try {
-    await reviewsSchema.validate(modalReviews.form, {abortEarly: false});
-    if (!modalReviews.isChecked) {
-      showToast('Вы должны согласиться с обработкой персональных данных.', true, modalReviews);
+    await modalsSchema.validate(modalCalc.form, {abortEarly: false});
+    if (!modalCalc.isChecked) {
+      showToast('Вы должны согласиться с обработкой персональных данных.', true, modalCalc);
       return;
     }
 
     init("igmhWkl9x5vvkcYeT");
 
     const templateParams = {
-      from_name: modalReviews.form.name,
+      from_name: modalCalc.form.name,
       to_name: 'sutrame735@gmail.com',
-      message: `На вашем сайте оставлен отзыв! Номер договора: ${modalReviews.form.contract}. Почта: ${modalReviews.form.email}
-      Отзыв: ${modalReviews.form.reviews}`,
-      reply_to: modalReviews.form.email,
+      message: `Заявка на расчет. Номер Телефона: ${modalCalc.form.phone}. Почта: ${modalCalc.form.email}`,
+      reply_to: modalCalc.form.email,
     };
 
     await send('service_7wrfg5b', 'template_1il9zx9', templateParams);
 
-    modalReviews.form = {name: '', contract: '', email: '', reviews: ''};
-    modalReviews.isChecked = false;
-    showToast('Ваш отзыв будет размещен после модерации!' + '\n' + 'Спасибо!', false, modalReviews);
+    modalCalc.form = {name: '', phone: '', email: ''};
+    modalCalc.isChecked = false;
+    showToast('Заявка на расчет отправлена', false, modalCalc);
     emit('close');
 
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       error.inner.forEach(err => {
-        showToast(err.message, true, modalReviews);
+        showToast(err.message, true, modalCalc);
       });
     } else {
-      showToast('Ошибка при отправке', true, modalReviews);
+      showToast('Ошибка при отправке', true, modalCalc);
     }
   } finally {
-    modalReviews.isSubmitting = false;
+    modalCalc.isSubmitting = false;
   }
 };
 

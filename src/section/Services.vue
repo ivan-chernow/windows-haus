@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {services} from "~/data/services.data";
-import ServiceItem from "~/components/ServiceItem/ServiceItem.vue";
-import ModalService from "~/components/ModalServices/ModalService.vue";
+import ServiceItem from "~/components/ServiceItem.vue";
+import ModalService from "~/components/ModalService.vue";
 import {ModalServicesState} from "~/store/modalState";
 
 const modalsService = ModalServicesState();

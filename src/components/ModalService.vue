@@ -50,11 +50,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import FreezeButton from "~/components/FreezeButton/FreezeButton.vue";
-import CalculationButton from "~/components/CalculationButton/CalculationButton.vue";
-import ModalMenuFreeze from "~/components/ModalMenuFreeze/ModalMenuFreeze.vue";
-import ModalMenuCalc from "~/components/ModalMenuCalc/ModalMenuCalc.vue";
-import ModalServiceCarousel from "~/components/ModalServices/ModalServiceCarousel.vue";
+import FreezeButton from "~/components/FreezeButton.vue";
+import CalculationButton from "~/components/CalculationButton.vue";
+import ModalMenuFreeze from "~/components/ModalMenuFreeze.vue";
+import ModalMenuCalc from "~/components/ModalMenuCalc.vue";
+import ModalServiceCarousel from "~/components/ModalServiceCarousel.vue";
 import {defineProps} from "vue";
 import {ModalCalcState, ModalFreezeState} from "~/store/modalState";
 import {usePressEscape} from "~/hooks/usePressEscape";

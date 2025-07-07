@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FreezeIcon from "~/components/FreezeIcon/FreezeIcon.vue";
+import FreezeIcon from "~/components/FreezeIcon.vue";
  const propsButton = defineProps<{
   title?: string;
   width?: string;

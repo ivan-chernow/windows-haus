@@ -261,5 +261,5 @@
 </style>
 
 <script setup lang="ts">
-import BidFreezeForm from "~/components/BidFreezeForm/BidFreezeForm.vue";
+import BidFreezeForm from "~/components/BidFreezeForm.vue";
 </script>

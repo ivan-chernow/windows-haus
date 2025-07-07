@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import markerImg from '../../assets/img/Portfolio/porfolio-svg.svg';
+import markerImg from '~/assets/img/Portfolio/porfolio-svg.svg';
 
 export default {
   name: 'YandexMap',

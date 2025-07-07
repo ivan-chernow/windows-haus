@@ -174,7 +174,7 @@
 
 <script setup lang="ts">
 import {computed, ref} from 'vue';
-import Order from '~/section/Order/Order.vue';
+import Order from '~/section/Order.vue';
 import {variants} from "~/data/products.data";
 
 interface Param {

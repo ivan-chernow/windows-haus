@@ -1,7 +1,7 @@
-import productStandard from '../assets/img/Products/productImg/productStandart.png';
-import productBusiness from '../assets/img/Products/productImg/productBusiness.jpg';
-import productExclusive from '../assets/img/Products/productImg/productExclusive.jpg';
-import productPremium from '../assets/img/Products/productImg/productPremium.png';
+import productStandard from '@/assets/img/Products/productImg/productStandart.png';
+import productBusiness from '@/assets/img/Products/productImg/productBusiness.jpg';
+import productExclusive from '@/assets/img/Products/productImg/productExclusive.jpg';
+import productPremium from '@/assets/img/Products/productImg/productPremium.png';
 
 interface VariantsTypes {
 	typeVariant: string;

@@ -1100,8 +1100,8 @@
 
 
 <script setup lang="ts">
-import FreezeButton from "~/components/FreezeButton/FreezeButton.vue";
-import ModalMenuFreeze from "~/components/ModalMenuFreeze/ModalMenuFreeze.vue";
+import FreezeButton from "~/components/FreezeButton.vue";
+import ModalMenuFreeze from "~/components/ModalMenuFreeze.vue";
 import {ModalFreezeState, ModalReviewsState} from "~/store/modalState";
 import {AboutState} from "~/store/aboutState";
 

@@ -72,12 +72,12 @@
 
 </template>
 <script setup lang="ts">
-import FreezeButton from "~/components/FreezeButton/FreezeButton.vue";
-import ModalMenuFreeze from "~/components/ModalMenuFreeze/ModalMenuFreeze.vue";
+import FreezeButton from "~/components/FreezeButton.vue";
+import ModalMenuFreeze from "~/components/ModalMenuFreeze.vue";
 import {defineProps} from "vue";
-import ModalServiceCarousel from "~/components/ModalServices/ModalServiceCarousel.vue";
+import ModalServiceCarousel from "~/components/ModalServiceCarousel.vue";
 import type {Image} from "~/data/portfolio.data";
-import PriceButton from "~/components/PriceButton/PriceButton.vue";
+import PriceButton from "~/components/PriceButton.vue";
 import { ModalCalcState, ModalFreezeState} from "~/store/modalState";
 import {usePressEscape} from "~/hooks/usePressEscape";
 

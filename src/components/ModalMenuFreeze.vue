@@ -252,7 +252,7 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 import * as yup from 'yup';
-import FreezeIcon from "~/components/FreezeIcon/FreezeIcon.vue";
+import FreezeIcon from "~/components/FreezeIcon.vue";
 import {init, send} from 'emailjs-com';
 import {modalsSchema} from "~/utils/vaildation";
 import {ModalFreezeState} from "~/store/modalState";

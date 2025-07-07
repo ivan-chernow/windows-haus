@@ -48,9 +48,9 @@ import {ref} from 'vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {Navigation} from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
-import {portfolio, type Project} from '~/data/portfolio.data';
-import ModalPortfolio from '../../components/modalPortfolio/modalPortfolio.vue';
-import YandexMap from '../../components/YandexMap/YandexMap.vue';
+import { portfolio, type Project } from '~/data/portfolio.data';
+import ModalPortfolio from '~/components/ModalPortfolio.vue';
+import YandexMap from '~/components/YandexMap.vue';
 
 const swiperInstance = ref(null);
 const isModalOpen = ref(false);
